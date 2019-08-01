@@ -3,11 +3,12 @@ import random,time,pygame
 from pygame.locals import *
 
 class Joueur:
-    def __init__(self,pseudo):
-        self.pseudo=pseudo
+    def __init__(self):
+        self.pseudo="pseudo"
         self.argent=0
-        self.proprietes=[]
+        self.cases_possedees=[]
         self.caseactu=0
+        self.couleur=(250,250,250)
 
 class Propriete:
     def __init__(self):
@@ -23,33 +24,37 @@ class Propriete:
         self.loyer_4maison=0
         self.loyer_hotel=0
 
-couleurs=[(221,187,85),(112,73,25),(192,35,234),(20,150,80),(211,194,79),(83,241,155),(194,213,102),(100,69,132),(81,187,5)]
+couleurs=[(150,130,20),(20,150,80),(200,90,80),(40,180,50),(20,150,200),(100,70,130),(20,50,130)]
 
-        # NOM               TYPE  PRIX     COULEUR
-cases=[ ["départ"           ,0   ,None     ,None    ],
-        ["Turquie"          ,1   ,766.43   ,0       ],
-        ["Arabie-|Saoudite" ,1   ,782.48   ,0       ],
-        ["chance"           ,3   ,None     ,None    ],
-        ["Pays-Bas"         ,1   ,912.90   ,1       ],
-        ["Australie"        ,1   ,14418.28 ,1       ],
-        ["Prison"           ,5   ,None     ,None    ],
-        ["Aéroport"         ,2   ,5000     ,None    ],
-        ["Indonésie"        ,1   ,1022.45  ,2       ],
-        ["Mexique"          ,1   ,1223.36  ,2       ],
-        ["Espagne"          ,1   ,1425.87  ,2       ],
-        ["Corée |du Sud"    ,1   ,1619.42  ,3       ],
-        ["Russie"           ,1   ,1630.66  ,3       ],
-        ["Canada"           ,1   ,1711.39  ,3       ],
-        ["Brésil"           ,1   ,1868.18  ,4       ],
-        ["Italie"           ,1   ,2072.20  ,4       ],
-        ["Inde"             ,1   ,2716.75  ,4       ],
-        ["France"           ,1   ,2775.25  ,5       ],
-        ["Royaume-Uni"      ,1   ,2828.64  ,5       ],
-        ["Allemagne"        ,1   ,4000.39  ,5       ],
-        ["Japon"            ,1   ,4971.93  ,6       ],
-        ["Chine"            ,1   ,13407.40 ,6       ],
-        ["Union-|Européenne",1   ,18750.05 ,7       ],
-        ["Etats-Unis"       ,1   ,20494.05 ,7       ]
+        # NOM                   TYPE  PRIX     COULEUR
+cases=[ ["départ"               ,0   ,None     ,None    ],
+        ["Pays-Bas"             ,1   ,912.90   ,0       ],
+        ["Australie"            ,1   ,14418.28 ,0       ],
+        ["chance"               ,3   ,None     ,None    ],
+        ["Indonésie"            ,1   ,1022.45  ,1       ],
+        ["Mexique"              ,1   ,1223.36  ,1       ],
+        ["Prison"               ,5   ,None     ,None    ],
+        ["Aéroport"             ,2   ,5000     ,None    ],
+        ["Espagne"              ,1   ,1425.87  ,1       ],
+        ["Caisse de|communauté" ,4   ,None     ,None    ],
+        ["Corée |du Sud"        ,1   ,1619.42  ,2       ],
+        ["Russie"               ,1   ,1630.66  ,2       ],
+        ["Canada"               ,1   ,1711.39  ,2       ],
+        ["Brésil"               ,1   ,1868.18  ,3       ],
+        ["Allez ou|vous voulez" ,6   ,1000     ,None    ],
+        ["Italie"               ,1   ,2072.20  ,3       ],
+        ["Inde"                 ,1   ,2716.75  ,3       ],
+        ["Aéroport"             ,2   ,5000     ,None    ],
+        ["chance"               ,3   ,None     ,None    ],
+        ["France"               ,1   ,2775.25  ,4       ],
+        ["Allez en|Prison"      ,8   ,None     ,None    ],
+        ["Royaume-Uni"          ,1   ,2828.64  ,4       ],
+        ["Allemagne"            ,1   ,4000.39  ,4       ],
+        ["Japon"                ,1   ,4971.93  ,5       ],
+        ["Chine"                ,1   ,13407.40 ,5       ],
+        ["Caisse de|communauté" ,4   ,None     ,None    ],
+        ["Union-|Européenne"    ,1   ,18750.05 ,6       ],
+        ["Etats-Unis"           ,1   ,20494.05 ,6       ]
 ]
 
 
@@ -68,7 +73,7 @@ def ry(y): return int(y/btey*tey)
 
 font=pygame.font.SysFont("Arial",ry(20))
 
-def aff_j():
+def aff_j(joueurs):
     fenetre.fill((0,0,0))
     e=0
     xx,yy=tex-rx(300),tey-ry(150)
@@ -83,6 +88,11 @@ def aff_j():
         for tt in c[0].split("|"):
             fenetre.blit(font.render(tt,True,(0,0,0)),[xx+rx(5),yy+ry(5)+h*ry(20)])
             h+=1
+        for j in joueurs:
+            for cs in j.cases_possedees:
+                if cs[0]==cases.index(c): 
+                    pygame.draw.rect(fenetre,j.cl,(xx+rx(0),yy+tcy-ry(10),tcx,ry(10)),0)
+                    pygame.draw.rect(fenetre,(0,0,0),(xx+rx(0),yy+tcy-ry(10),tcx,ry(10)),1)
         xx+=px*tcx
         yy+=py*tcy
         if e==0 and xx<=rx(100): e,px,py=1,0,-1
@@ -93,8 +103,14 @@ def aff_j():
 def main_j():
     encour=True
     r_plateau=pygame.Rect(rx(100),ry(100),rx(800),ry(550))
+    joueurs=[]
+    j1=Joueur()
+    j1.nom="Nathan"
+    j1.cl=(0,50,200)
+    j1.cases_possedees=[[5],[18]]
+    joueurs.append(j1)
     while encour:
-        aff_j()
+        aff_j(joueurs)
         for event in pygame.event.get():
             if event.type==QUIT: exit()
             elif event.type==KEYDOWN:
