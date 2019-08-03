@@ -588,6 +588,7 @@ def main_j(joueurs):
                                     if tourjoueur>=len(joueurs): tourjoueur,tour=0,tour+1
                             elif di==1 and len(joueurs[tourjoueur].cases_possedees) >= 1: vendre_prop(joueurs[tourjoueur],joueurs,tourjoueur)
                             elif di==3 and len(joueurs[tourjoueur].cases_possedees) >= 1: construire(joueurs[tourjoueur],joueurs,tourjoueur)
+                            elif di in [1,3]: alert("Vous n'avez pas de propriétés")
                             
 
 def aff_menu(joueurs):
