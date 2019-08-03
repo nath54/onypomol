@@ -3,13 +3,16 @@ import random,time,pygame
 from pygame.locals import *
 
 class Joueur:
-    def __init__(self):
-        self.pseudo="pseudo"
+    def __init__(self,pseudo,cl):
+        self.pseudo=pseudo
         self.argent=40000
         self.cases_possedees=[]
         self.caseactu=0
-        self.couleur=(250,250,250)
+        self.couleur=cl
+        self.cl=self.couleur
         self.emprisone=False
+        self.perdu=False
+        self.dprison=0
 
 class Propriete:
     def __init__(self):
@@ -24,6 +27,8 @@ class Propriete:
         self.loyer_3maison=0
         self.loyer_4maison=0
         self.loyer_hotel=0
+
+def rcl(): return ( random.randint(0,255) , random.randint(0,255) , random.randint(0,255) )
 
 #effets :
 #1=Le joueur gagne de l'argent
@@ -146,6 +151,7 @@ def ry(y): return int(y/btey*tey)
 font=pygame.font.SysFont("Arial",ry(20))
 font2=pygame.font.SysFont("Arial",ry(16))
 font3=pygame.font.SysFont("Arial",ry(30))
+font4=pygame.font.SysFont("Arial",ry(50))
 
 dimg="images/"
 
@@ -153,6 +159,32 @@ tcx,tcy=rx(150),ry(100)
 
 for c in cases:
     if type(c[3])==str: c[3]=pygame.transform.scale( pygame.image.load(dimg+c[3]), [tcx,tcy] )
+
+##
+
+def aff_pyinput(txt,inp):
+    pygame.draw.rect(fenetre,(100,100,100),(rx(300),ry(400),rx(600),ry(300)),0)
+    pygame.draw.rect(fenetre,(255,255,255),(rx(400),ry(500),rx(400),ry(60)),0)
+    fenetre.blit( font.render(txt,True,(255,255,255)) , [rx(500),ry(430)])
+    fenetre.blit( font.render(inp,True,(0,0,0)) , [rx(450),ry(515)])
+    fenetre.blit( font.render("Appuyez sur entrée pour continuer",True,(255,255,255)) , [rx(400),ry(600)])
+    pygame.display.update()
+ke={K_a:"a",K_b:"b",K_c:"c",K_d:"d",K_e:"e",K_f:"f",K_g:"g",K_h:"h",K_i:"i",K_j:"j",K_k:"k",K_l:"l",K_m:"m",K_n:"n",K_o:"o",K_p:"p",K_q:"q",K_r:"r",K_s:"s",K_t:"t",K_u:"u",K_v:"v",K_w:"w",K_x:"x",K_y:"y",K_z:"z",K_KP0:"0",K_KP1:"1",K_KP2:"2",K_KP3:"3",K_KP4:"4",K_KP5:"5",K_KP6:"6",K_KP7:"7",K_KP8:"8",K_KP9:"9",K_SPACE:" "}
+def pynput(txt):
+    inp,limcar,encour_i,affcurs,taffc,daffc="",64,True,True,0.4,time.time()
+    while encour_i:
+        if time.time()-daffc >= taffc: affcurs,daffc=not affcurs,time.time()
+        if affcurs: aff_pyinput(txt,inp+"|")
+        else: aff_pyinput(txt,inp)
+        for event in pygame.event.get():
+            if event.type==QUIT: exit()
+            elif event.type==KEYDOWN:
+                v,k=ke.get(event.key),None
+                if v!=None: k=v
+                elif event.key==K_BACKSPACE: inp=inp[:-1]
+                elif event.key==K_RETURN: return inp
+                if k!=None and ( pygame.key.get_pressed()[K_LSHIFT] or pygame.key.get_pressed()[K_RSHIFT]): k=k.upper()
+                if k!=None and len(inp) < limcar : inp+=k
 
 def lancerdes():
     nbd=2
@@ -261,6 +293,16 @@ def aff_j(joueurs,tourjoueur):
                 if cs[0]==cases.index(c): 
                     pygame.draw.rect(fenetre,j.cl,(xx+rx(0),yy+tcy-ry(10),tcx,ry(10)),0)
                     pygame.draw.rect(fenetre,(0,0,0),(xx+rx(0),yy+tcy-ry(10),tcx,ry(10)),1)
+                    if cs[1]<=4:
+                        xxx,yyy=xx+rx(5),yy+ry(1)
+                        ctxx,ctyy=rx(5),ry(5)
+                        for x in range(cs[1]):
+                            pygame.draw.rect(fenetre,j.cl,(xxx,yyy,ctxx,ctyy),0)
+                            pygame.draw.rect(fenetre,(0,0,0),(xxx,yyy,ctxx,ctyy),rx(1))
+                            xxx+=ctxx+rx(5)
+                    else:
+                        pygame.draw.rect(fenetre,j.cl,(xx+rx(5),yy+ry(1),tcx-rx(10),ry(5)),0)
+                        pygame.draw.rect(fenetre,(0,0,0),(xx+rx(5),yy+ry(1),tcx-rx(10),ry(5)),rx(1))
         if c[1]==1: fenetre.blit( font.render(str(c[2])+" M $",True,(0,0,0)) , [xx+rx(5),yy+ry(50)])
         cpos.append([xx,yy])
         xx+=px*tcx
@@ -272,26 +314,27 @@ def aff_j(joueurs,tourjoueur):
     tjx,tjy=rx(200),ry(175)
     tail=int(ry(40)/len(joueurs))
     for j in joueurs:
-        k=joueurs.index(j)
-        #pion
-        tt=tail
-        if joueurs.index(j)==tourjoueur: tt=tail+ry(10)
-        pygame.draw.circle(fenetre,j.cl,(cpos[j.caseactu][0]+(k+1)*(tail*2+rx(5)),cpos[j.caseactu][1]+ry(50)),tt,0)
-        pygame.draw.circle(fenetre,(0,0,0),(cpos[j.caseactu][0]+(k+1)*(tail*2+rx(5)),cpos[j.caseactu][1]+ry(50)),tt,rx(2))
-        #case
-        clf=(255,255,255)
-        if joueurs.index(j)==tourjoueur: clf=j.cl
-        pygame.draw.rect(fenetre,clf,(xx,yy,tjx,tjy),0)
-        pygame.draw.rect(fenetre,(0,0,0),(xx,yy,tjx,tjy),rx(1))
-        fenetre.blit( font.render(j.pseudo,True,(0,0,0)) , [xx+rx(5),yy+ry(5)] )
-        fenetre.blit( font2.render("argent : "+str(j.argent)+" M $",True,(0,0,0)) , [xx+rx(2),yy+ry(30)] )
-        fenetre.blit( font2.render("propriétés : "+str(len(j.cases_possedees))+"/"+str(nbprop),True,(0,0,0)) , [xx+rx(5),yy+ry(55)] )
-        pygame.draw.rect( fenetre, j.cl , (xx+rx(5),yy+ry(80),rx(60),ry(60)) ,0)
-        if j.emprisone: fenetre.blit( font.render("emprisoné",True,(255,0,0)) , [xx+rx(5),yy+ry(100)] )
-        xx+=tjx
-        if xx>=rx(700):
-            xx=rx(300)
-            yy+=tjy
+        if not j.perdu:
+            k=joueurs.index(j)
+            #pion
+            tt=tail
+            if joueurs.index(j)==tourjoueur: tt=tail+ry(10)
+            pygame.draw.circle(fenetre,j.cl,(cpos[j.caseactu][0]+(k+1)*(tail*2+rx(5)),cpos[j.caseactu][1]+ry(50)),tt,0)
+            pygame.draw.circle(fenetre,(0,0,0),(cpos[j.caseactu][0]+(k+1)*(tail*2+rx(5)),cpos[j.caseactu][1]+ry(50)),tt,rx(2))
+            #case
+            clf=(255,255,255)
+            if joueurs.index(j)==tourjoueur: clf=j.cl
+            pygame.draw.rect(fenetre,clf,(xx,yy,tjx,tjy),0)
+            pygame.draw.rect(fenetre,(0,0,0),(xx,yy,tjx,tjy),rx(1))
+            fenetre.blit( font.render(j.pseudo,True,(0,0,0)) , [xx+rx(5),yy+ry(5)] )
+            fenetre.blit( font2.render("argent : "+str(j.argent)+" M $",True,(0,0,0)) , [xx+rx(2),yy+ry(30)] )
+            fenetre.blit( font2.render("propriétés : "+str(len(j.cases_possedees))+"/"+str(nbprop),True,(0,0,0)) , [xx+rx(5),yy+ry(55)] )
+            pygame.draw.rect( fenetre, j.cl , (xx+rx(5),yy+ry(80),rx(60),ry(60)) ,0)
+            if j.emprisone: fenetre.blit( font.render("emprisoné",True,(255,0,0)) , [xx+rx(5),yy+ry(100)] )
+            xx+=tjx
+            if xx>=rx(750):
+                xx=rx(300)
+                yy+=tjy
     tbx,tby=rx(200),ry(50)
     fenetre.blit( font3.render("Tour de "+joueurs[tourjoueur].pseudo,True,joueurs[tourjoueur].cl) , [rx(350),ry(200)])
     #
@@ -305,15 +348,11 @@ def aff_j(joueurs,tourjoueur):
     #
     bts[2]=pygame.draw.rect(fenetre,(200,200,200),(tbx*2,0,tbx,tby),0)
     pygame.draw.rect(fenetre,(0,0,0),(tbx*2,0,tbx,tby),rx(2))
-    fenetre.blit( font.render("hypothéquer",True,(0,0,0)) , [tbx*2+rx(25),ry(15)] )
+    fenetre.blit( font.render("proposer une vente",True,(0,0,0)) , [tbx*2+rx(25),ry(15)] )
     #
     bts[3]=pygame.draw.rect(fenetre,(200,200,200),(tbx*3,0,tbx,tby),0)
     pygame.draw.rect(fenetre,(0,0,0),(tbx*3,0,tbx,tby),rx(2))
     fenetre.blit( font.render("contstruire",True,(0,0,0)) , [tbx*3+rx(25),ry(15)] )
-    #
-    bts[4]=pygame.draw.rect(fenetre,(200,200,200),(tbx*4,0,tbx,tby),0)
-    pygame.draw.rect(fenetre,(0,0,0),(tbx*4,0,tbx,tby),rx(2))
-    fenetre.blit( font.render("proposer une vente",True,(0,0,0)) , [tbx*4+rx(25),ry(15)] )
     #
     pygame.display.update()
     return crs,bts
@@ -427,29 +466,90 @@ def ecran_choix(joueurs,tourjoueur):
                             pass
                         elif i==2: encour_c=False
                         elif i==3: tirercartechance(j,joueurs,tourjoueur)
-                        
-                        
 
-def main_j():
+def vendre_prop(j,joueurs,tourjoueur):
+    rcts=[]
+    pygame.draw.rect(fenetre,(100,100,100),(rx(250),ry(300),rx(700),ry(500)),0)
+    b1=pygame.draw.rect(fenetre,(255,0,0),(rx(750),ry(300),rx(50),ry(50)),0)
+    fenetre.blit( font4.render("X",True,(0,0,0)) , [rx(750),ry(300)])
+    fenetre.blit( font.render("Séléctionnez la propriété que vous voulez vendre à la banque",True,(255,255,255)) , [rx(350),ry(350)])
+    xx,yy,ctx,cty=rx(400),ry(400),rx(150),ry(150)
+    for p in j.cases_possedees:
+        rcts.append( pygame.draw.rect(fenetre,(255,255,255),(xx,yy,ctx,cty),0) )
+        fenetre.blit( font.render( cases[p[0]][0] , True , (0,0,0)) , [xx+rx(5),yy+ry(5)])
+        fenetre.blit( font.render( str(cases[p[0]][2]/2)+" M $" , True , (0,0,0)) , [xx+rx(5),yy+ry(25)])
+        xx+=tcx+rx(10)
+        if xx>=rx(750): xx,yy=rx(400),yy+tcy+ry(10)
+    pygame.display.update()
+    encour_vp=True
+    while encour_vp:
+        for event in pygame.event.get():
+            if event.type==QUIT: exit()
+            elif event.type==MOUSEBUTTONUP:
+                pos=pygame.mouse.get_pos()
+                if b1.collidepoint(pos): encour_vp=False
+                for r in rcts:
+                    if r.collidepoint(pos):
+                        ii=j.cases_possedees[rcts.index(r)][0]
+                        encour_vp=False
+                        aff_j(joueurs,tourjoueur)
+                        j.argent+=cases[ii][2]/2
+                        try: del(j.cases_possedees[rcts.index(r)])
+                        except: pass
+                        alert("Vous avez vendu à la banque "+cases[ii][0]+"| Cela vous a rapporté "+str(cases[ii][2]/2)+" M $")
+
+def construire(j,joueurs,tourjoueur):
+    pygame.draw.rect(fenetre,(100,100,100),(rx(300),ry(200),rx(700),ry(600)),0)
+    fenetre.blit( font.render("Séléctionnez la propriété sur laquelle vous voulez construire une maison :",True,(255,255,255)) , [rx(350),ry(350)])
+    cr=[]
+    xx,yy,ctx,cty=rx(350),ry(450),rx(200),ry(200)
+    for p in j.cases_possedees:
+        cr.append( pygame.draw.rect(fenetre,(255,255,255),(xx,yy,ctx,cty),0) )
+        pygame.draw.rect(fenetre,(0,0,0),(xx,yy,ctx,cty),rx(2))
+        fenetre.blit( font.render(cases[p[0]][0],True,(0,0,0)) , [xx+rx(5),yy+ry(5)])
+        if p[1]<4: fenetre.blit( font.render(str(cases[p[0]][10])+" M $",True,(0,0,0)) , [xx+rx(5),yy+ry(30)])
+        elif p[1]<5: fenetre.blit( font.render(str(cases[p[0]][11])+" M $",True,(0,0,0)) , [xx+rx(5),yy+ry(30)])
+        else: fenetre.blit( font.render("complet",True,(0,0,0)) , [xx+rx(5),yy+ry(30)])
+        xx+=ctx+rx(10)
+        if xx>=rx(900): xx,yy=rx(350),yy+cty+ry(10)
+    pygame.display.update()
+    encour_co=True
+    while encour_co:
+        for event in pygame.event.get():
+            if event.type==QUIT: exit()
+            elif event.type==MOUSEBUTTONUP:
+                pos=pygame.mouse.get_pos()
+                for c in cr:
+                    if c.collidepoint(pos):
+                        encour_co=False
+                        p=j.cases_possedees[cr.index(c)]
+                        nbclct=0
+                        nbclcj=0
+                        clc=cases[p[0]][3]
+                        for cc in cases:
+                            if cc[3]==clc: nbclct+=1
+                        for pp in j.cases_possedees:
+                            if cases[pp[0]][3]==clc: nbclcj+=1
+                        aff_j(joueurs,tourjoueur)
+                        if nbclct==nbclcj:
+                            if p[1]<5:
+                                if p[1]<4:
+                                    prix=cases[p[0]][10]
+                                else: prix=cases[p[0]][11]
+                                if j.argent >= prix:
+                                    p[1]+=1
+                                    j.argent-=prix
+                                    t="e maison"
+                                    if p[1]==5: t=" hotel"
+                                    alert("Vous venez de construire un"+t+"|Sur votre propriété "+cases[p[0]][0]+"|Cela vous a couté "+str(prix)+" M $")
+                                else: alert("Vous n'avez pas assez d'argent")
+                            else: alert("Vous avez déjà un hotel dessus")
+                        else: alert("Vous ne possédez pas toutes les propriétés|de cette couleur pour construire dessus")
+
+def main_j(joueurs):
+    tour=1
     encour=True
     r_plateau=pygame.Rect(rx(100),ry(100),rx(800),ry(550))
-    joueurs=[]
-    j1=Joueur()
-    j1.pseudo="Nathan"
-    j1.cl=(0,50,200)
-    joueurs.append(j1)
-    j2=Joueur()
-    j2.pseudo="Super Nathan"
-    j2.cl=(0,150,20)
-    joueurs.append(j2)
-    j3=Joueur()
-    j3.pseudo="Nath54"
-    j3.cl=(100,50,20)
-    joueurs.append(j3)
-    j4=Joueur()
-    j4.pseudo="Super Nathan2"
-    j4.cl=(200,0,200)
-    joueurs.append(j4)
     tourjoueur=0
     while encour:
         for j in joueurs:
@@ -485,24 +585,37 @@ def main_j():
                                     alert("Vous avez fait un double|vous rejouez")
                                 else:
                                     tourjoueur+=1
-                                    if tourjoueur>=len(joueurs): tourjoueur=0
-                            
+                                    if tourjoueur>=len(joueurs): tourjoueur,tour=0,tour+1
+                            elif di==1 and len(joueurs[tourjoueur].cases_possedees) >= 1: vendre_prop(joueurs[tourjoueur],joueurs,tourjoueur)
+                            elif di==3 and len(joueurs[tourjoueur].cases_possedees) >= 1: construire(joueurs[tourjoueur],joueurs,tourjoueur)
                             
 
-
-def aff_menu():
+def aff_menu(joueurs):
     bts=[]
     for x in range(10): bts.append(None)
+    jr=[]
+    cr=[]
     fenetre.fill((0,0,0))
-    pass
+    fenetre.blit( font4.render("ONYPOMOL",True,(200,200,20)), [rx(350),ry(100)])
+    bts[0]=pygame.draw.rect(fenetre,(200,255,50),(rx(400),ry(700),rx(100),ry(50)),0)
+    fenetre.blit( font.render("jouer",True,(0,0,0)) , [rx(420),ry(710)])
+    bts[1]=pygame.draw.rect(fenetre,(100,100,20),(rx(50),ry(350),rx(40),ry(40)),0)
+    fenetre.blit( font4.render("+",True,(0,0,0)) , [rx(50),ry(340)])
+    xx,yy,tjx,tjy=rx(200),ry(200),rx(200),ry(300)
+    for j in joueurs:
+        jr.append( pygame.draw.rect(fenetre,(255,255,255),(xx,yy,tjx,tjy),0) )
+        pygame.draw.rect(fenetre,(30,30,30),(xx,yy,tjx,tjy),rx(2))
+        fenetre.blit( font.render(j.pseudo,True,(0,0,0)) , [xx+rx(10),yy+ry(5)] )
+        cr.append( pygame.draw.rect( fenetre , j.cl , (xx+rx(50),yy+ry(100),rx(50),ry(50)) , 0) )
+        xx+=tjx+rx(15)
     pygame.display.update()
-    return bts
+    return bts,jr,cr
 
 def menu():
-    pass
+    joueurs=[]
     encour_m=True
     while encour_m:
-        bts=aff_menu()
+        bts,jr,cr=aff_menu(joueurs)
         for event in pygame.event.get():
             if event.type==QUIT: exit()
             elif event.type==KEYDOWN:
@@ -513,13 +626,23 @@ def menu():
                     if b!=None and b.collidepoint(pos):
                         di=bts.index(b)
                         if di==0:
-                            main_jeu()
+                            main_j(joueurs)
+                        elif di==1:
+                            pseudo=pynput("pseudo :")
+                            cl=rcl()
+                            joueurs.append( Joueur(pseudo,cl) )
+                ccr=False
+                for c in cr:
+                    if c.collidepoint(pos): ccr,joueurs[cr.index(c)].cl=True,rcl()
+                if not ccr:
+                    for j in jr:
+                        if j.collidepoint(pos): joueurs[jr.index(j)].pseudo=pynput("pseudo :")
                         
             
 
 
 
-main_j()
+menu()
 
 
 
@@ -532,4 +655,5 @@ main_j()
 
 
 
+    
     
