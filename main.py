@@ -88,40 +88,50 @@ cartes_chances=[ ["Vous gagnez 5 M $",1,5],
 
 
 couleurs=[(150,130,20),(20,150,80),(200,90,80),(40,180,50),(20,150,200),(100,70,130),(20,50,130)]
-        # NOM                   TYPE  PRIX     COULEUR/IMAGE
-cases=[ ["départ"               ,0   ,None     ,"cdep.png"          ],
-        ["Pays-Bas"             ,1   ,912.90   ,0                   ],
-        ["Australie"            ,1   ,1418.28 ,0                   ],
-        ["chance"               ,3   ,None     ,"cchance.png"       ],
-        ["Indonésie"            ,1   ,1022.45  ,1                   ],
-        ["Mexique"              ,1   ,1223.36  ,1                   ],
-        ["Prison"               ,5   ,None     ,"cprison.png"       ],
-        ["Aéroport"             ,2   ,5000     ,"cavion.png"        ],
-        ["Espagne"              ,1   ,1425.87  ,1                   ],
-        ["chance"               ,3   ,None     ,"cchance.png"       ],
-        ["Corée |du Sud"        ,1   ,1619.42  ,2                   ],
-        ["Russie"               ,1   ,1630.66  ,2                   ],
-        ["Canada"               ,1   ,1711.39  ,2                   ],
-        ["Brésil"               ,1   ,1868.18  ,3                   ],
-        ["Allez ou|vous voulez" ,6   ,1000     ,None                ],
-        ["Italie"               ,1   ,2072.20  ,3                   ],
-        ["Inde"                 ,1   ,2716.75  ,3                   ],
-        ["Aéroport"             ,2   ,5000     ,"cavion.png"        ],
-        ["chance"               ,3   ,None     ,"cchance.png"       ],
-        ["France"               ,1   ,2775.25  ,4                   ],
-        ["Allez en|Prison"      ,8   ,None     ,"callerprison.png"  ],
-        ["Royaume-Uni"          ,1   ,2828.64  ,4                   ],
-        ["Allemagne"            ,1   ,4000.39  ,4                   ],
-        ["Japon"                ,1   ,4971.93  ,5                   ],
-        ["Chine"                ,1   ,13407.40 ,5                   ],
-        ["chance"               ,3   ,None     ,"cchance.png"       ],
-        ["Union-|Européenne"    ,1   ,18750.05 ,6                   ],
-        ["Etats-Unis"           ,1   ,20494.05 ,6                   ]
+        # NOM                   TYPE  PRIX     COULEUR/IMAGE        PRIX TERRAIN NU   PRIX1MAISON   PRIX2MAISON   PRIX3MAISON   PRIX4MAISON    PRIXHOTEL   COUTMAISON   COUTHOTEL  
+cases=[ ["départ"               ,0   ,None     ,"cdep.png"          ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Pays-Bas"             ,1   ,912.90   ,0                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Australie"            ,1   ,1418.28  ,0                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["chance"               ,3   ,None     ,"cchance.png"       ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Indonésie"            ,1   ,1022.45  ,1                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Mexique"              ,1   ,1223.36  ,1                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Prison"               ,5   ,None     ,"cprison.png"       ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Aéroport"             ,2   ,5000     ,"cavion.png"        ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Espagne"              ,1   ,1425.87  ,1                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["chance"               ,3   ,None     ,"cchance.png"       ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Corée |du Sud"        ,1   ,1619.42  ,2                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Russie"               ,1   ,1630.66  ,2                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Canada"               ,1   ,1711.39  ,2                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Brésil"               ,1   ,1868.18  ,3                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Allez ou|vous voulez" ,6   ,1000     ,None                ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Italie"               ,1   ,2072.20  ,3                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Inde"                 ,1   ,2716.75  ,3                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Aéroport"             ,2   ,5000     ,"cavion.png"        ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["chance"               ,3   ,None     ,"cchance.png"       ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["France"               ,1   ,2775.25  ,4                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Allez en|Prison"      ,8   ,None     ,"callerprison.png"  ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Royaume-Uni"          ,1   ,2828.64  ,4                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Allemagne"            ,1   ,4000.39  ,4                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Japon"                ,1   ,4971.93  ,5                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Chine"                ,1   ,13407.40 ,5                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["chance"               ,3   ,None     ,"cchance.png"       ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Union-|Européenne"    ,1   ,18750.05 ,6                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0],
+        ["Etats-Unis"           ,1   ,20494.05 ,6                   ,0             ,0         ,0         ,0         ,0          ,0       ,0        ,0]
 ]
 
 nbprop=0
 for c in cases:
     if c[1] in [1,2]: nbprop+=1
+    if c[1]==1:
+        c[4]=c[2]*0.25
+        c[5]=c[2]*0.5
+        c[6]=c[2]*1.5
+        c[7]=c[2]*2.25
+        c[8]=c[2]*3.5
+        c[9]=c[2]*5
+        c[10]=c[2]*0.25
+        c[11]=c[2]*0.5
+        
 
 #############################################
 
@@ -322,7 +332,8 @@ def tirercartechance(j,joueurs,tourjoueur):
         ec=True
     elif carte[1]==4:
         j.caseactu-=carte[2]
-        if j.caseactu <0: j.caseactu=len(cases)+j.caseactu
+        if j.caseactu <0:
+            j.caseactu=len(cases)+j.caseactu
         ec=True
     elif carte[1]==5:
         j.caseactu=carte[2]
@@ -357,14 +368,14 @@ def ecran_choix(joueurs,tourjoueur):
     bts=[]
     for x in range(10): bts.append( None )
     pygame.draw.rect(fenetre,(150,135,20),(rx(300),ry(250),rx(600),ry(500)),0)
-    fenetre.blit( font.render(j.pseudo+", vous êtes tombé sur la case : "+ca[0].replace("|",""),True,(50,50,50)),[rx(305),ry(300)])
+    fenetre.blit( font.render(j.pseudo+", vous êtes tombé sur la case : "+ca[0].replace("|"," "),True,(50,50,50)),[rx(305),ry(300)])
     if ca[1]==1:
         fenetre.blit( font.render("C'est une propriété",True,(50,50,50)),[rx(400),ry(350)])
         pos=[False,None,0]
         for jj in joueurs:
             for p in jj.cases_possedees:
                 if p[0]==cases.index( ca ):
-                    pos=[True,jj,p[1]]
+                    pos=[True,jj,ca[4+p[1]]]
                     break
         if not pos[0]:
             fenetre.blit( font.render("Elle n'est pas possédée",True,(50,50,50)),[rx(400),ry(400)])
@@ -382,6 +393,7 @@ def ecran_choix(joueurs,tourjoueur):
             print(pos[2])
             fenetre.blit( font.render("Le loyer sera de "+str(pos[2])+" M $",True,(50,50,50)),[rx(400),ry(450)])
             j.argent-=pos[2]
+            pos[1].argent+=pos[2]
             bts[2]=pygame.draw.rect( fenetre,(255,255,255), (rx(650),ry(550),rx(75),ry(50)) , 0)
             fenetre.blit( font.render("ok",True,(0,0,0)) , [rx(660),ry(570)])
     elif ca[1]==3:
