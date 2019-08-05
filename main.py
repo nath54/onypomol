@@ -76,21 +76,17 @@ cartes_chances=[ ["Vous gagnez 5 M $",1,5],
                  ["Vous allez sur la case 16",5,16],
                  ["Vous allez sur la case 19",5,19],
                  ["Vous allez sur la case 20",5,20],
-                 ["Vous allez sur la case 21",5,20],
-                 ["Vous allez sur la case 22",5,20],
-                 ["Vous allez sur la case 23",5,20],
-                 ["Vous allez sur la case 24",5,20],
-                 ["Vous allez sur la case 25",5,20],
-                 ["Vous allez sur la case 26",5,20],
-                 ["Vous allez sur la case 27",5,20],
+                 ["Vous allez sur la case 21",5,21],
+                 ["Vous allez sur la case 22",5,22],
+                 ["Vous allez sur la case 23",5,23],
+                 ["Vous allez sur la case 24",5,24],
+                 ["Vous allez sur la case 25",5,25],
+                 ["Vous allez sur la case 26",5,26],
+                 ["Vous allez sur la case 27",5,27],
                  ["Vous allez en prison",6,0],
                  ["Vous devez faire des réparations| vous devez payer 1000 M $ pour chaque maison",7],
                  ["Vous devez faire des réparations| vous devez payer 5000 M $ pour chaque hotel",8]
 ]
-
-
-
-
 
 couleurs=[(150,130,20),(20,150,80),(200,90,80),(40,180,50),(20,150,200),(100,70,130),(20,50,130)]
         # NOM                   TYPE  PRIX     COULEUR/IMAGE        PRIX TERRAIN NU   PRIX1MAISON   PRIX2MAISON   PRIX3MAISON   PRIX4MAISON    PRIXHOTEL   COUTMAISON   COUTHOTEL  
@@ -137,7 +133,6 @@ for c in cases:
         c[10]=c[2]*0.25
         c[11]=c[2]*0.5
         
-
 #############################################
 
 pygame.init()
@@ -162,7 +157,7 @@ for c in cases:
 
 ##
 
-def aff_pyinput(txt,inp):
+def aff_pynput(txt,inp):
     pygame.draw.rect(fenetre,(100,100,100),(rx(300),ry(400),rx(600),ry(300)),0)
     pygame.draw.rect(fenetre,(255,255,255),(rx(400),ry(500),rx(400),ry(60)),0)
     fenetre.blit( font.render(txt,True,(255,255,255)) , [rx(500),ry(430)])
@@ -174,8 +169,8 @@ def pynput(txt):
     inp,limcar,encour_i,affcurs,taffc,daffc="",64,True,True,0.4,time.time()
     while encour_i:
         if time.time()-daffc >= taffc: affcurs,daffc=not affcurs,time.time()
-        if affcurs: aff_pyinput(txt,inp+"|")
-        else: aff_pyinput(txt,inp)
+        if affcurs: aff_pynput(txt,inp+"|")
+        else: aff_pynput(txt,inp)
         for event in pygame.event.get():
             if event.type==QUIT: exit()
             elif event.type==KEYDOWN:
@@ -318,9 +313,12 @@ def aff_j(joueurs,tourjoueur):
             k=joueurs.index(j)
             #pion
             tt=tail
+            tb=rx(2)
+            cb=(0,0,0)
             if joueurs.index(j)==tourjoueur: tt=tail+ry(10)
+            if j.emprisone: tb,cb=rx(5),(100,100,100)
             pygame.draw.circle(fenetre,j.cl,(cpos[j.caseactu][0]+(k+1)*(tail*2+rx(5)),cpos[j.caseactu][1]+ry(50)),tt,0)
-            pygame.draw.circle(fenetre,(0,0,0),(cpos[j.caseactu][0]+(k+1)*(tail*2+rx(5)),cpos[j.caseactu][1]+ry(50)),tt,rx(2))
+            pygame.draw.circle(fenetre,cb,(cpos[j.caseactu][0]+(k+1)*(tail*2+rx(5)),cpos[j.caseactu][1]+ry(50)),tt,tb)
             #case
             clf=(255,255,255)
             if joueurs.index(j)==tourjoueur: clf=j.cl
@@ -342,15 +340,17 @@ def aff_j(joueurs,tourjoueur):
     pygame.draw.rect(fenetre,(0,0,0),(tbx*0,0,tbx,tby),rx(2))
     fenetre.blit( font.render("lancer les dés",True,(0,0,0)) , [tbx*0+rx(25),ry(15)] )
     #
-    bts[1]=pygame.draw.rect(fenetre,(200,200,200),(tbx*1,0,tbx,tby),0)
+    cb=(230,230,230)
+    if joueurs[tourjoueur].emprisone: cb=(50,50,50)
+    bts[1]=pygame.draw.rect(fenetre,cb,(tbx*1,0,tbx,tby),0)
     pygame.draw.rect(fenetre,(0,0,0),(tbx*1,0,tbx,tby),rx(2))
     fenetre.blit( font.render("vendre propriété",True,(0,0,0)) , [tbx*1+rx(25),ry(15)] )
     #
-    bts[2]=pygame.draw.rect(fenetre,(200,200,200),(tbx*2,0,tbx,tby),0)
+    bts[2]=pygame.draw.rect(fenetre,cb,(tbx*2,0,tbx,tby),0)
     pygame.draw.rect(fenetre,(0,0,0),(tbx*2,0,tbx,tby),rx(2))
     fenetre.blit( font.render("proposer une vente",True,(0,0,0)) , [tbx*2+rx(25),ry(15)] )
     #
-    bts[3]=pygame.draw.rect(fenetre,(200,200,200),(tbx*3,0,tbx,tby),0)
+    bts[3]=pygame.draw.rect(fenetre,cb,(tbx*3,0,tbx,tby),0)
     pygame.draw.rect(fenetre,(0,0,0),(tbx*3,0,tbx,tby),rx(2))
     fenetre.blit( font.render("contstruire",True,(0,0,0)) , [tbx*3+rx(25),ry(15)] )
     #
@@ -366,8 +366,8 @@ def tirercartechance(j,joueurs,tourjoueur):
         j.caseactu+=carte[2]
         if j.caseactu >= len(cases):
             j.caseactu=joueurs[tourjoueur].caseactu-len(cases)
-            j.argent+=5000
-            alert("Vous êtes passé par la case départ|vous avez recu 5000 M $")
+            j.argent+=2000
+            alert("Vous êtes passé par la case départ|vous avez recu 2000 M $")
         ec=True
     elif carte[1]==4:
         j.caseactu-=carte[2]
@@ -399,7 +399,52 @@ def tirercartechance(j,joueurs,tourjoueur):
     aff_j(joueurs,tourjoueur)
     if ec: ecran_choix(joueurs,tourjoueur)
         
-    
+def enchere(ic,joueurs,tourjoueur):
+    nbja=[]
+    tjen=0
+    enchere=cases[ic][2]/2
+    posen=None
+    while len(nbja)<len(joueurs)-1:
+        encour_en=True
+        while encour_en:
+            pygame.draw.rect(fenetre,(200,200,200),(rx(200),ry(200),rx(700),ry(700)),0)
+            fenetre.blit( font.render("Tour de "+joueurs[tjen].pseudo,True,(0,0,0)) , [rx(300),ry(300)] )
+            fenetre.blit( font.render("montant de l'enchère : "+str(enchere),True,(0,0,0)) , [rx(300),ry(400)] )
+            if posen!=None: fenetre.blit( font.render("Le futur possesseur est peut-etre : "+posen.pseudo,True,(0,0,0)) , [rx(250),ry(450)] )
+            b1=pygame.draw.rect(fenetre,(255,255,255),(rx(300),ry(600),rx(150),ry(50)),0)
+            fenetre.blit( font.render("Surenchérir",True,(0,0,0)) , [rx(320),ry(610)])
+            b2=pygame.draw.rect(fenetre,(255,255,255),(rx(600),ry(600),rx(150),ry(50)),0)
+            fenetre.blit( font.render("abandonner",True,(0,0,0)) , [rx(620),ry(610)])
+            pygame.display.update()
+            if joueurs[tjen] in nbja: encour_en=False
+            for event in pygame.event.get():
+                if event.type==QUIT: exit()
+                elif event.type==KEYDOWN:
+                    if event.key==K_ESCAPE: exit()
+                elif event.type==MOUSEBUTTONUP:
+                    pos=pygame.mouse.get_pos()
+                    if b1.collidepoint(pos):
+                        encher=pynput("Votre proposition : ")
+                        try:
+                            encher=int(encher)
+                            if encher>enchere:
+                                enchere=encher
+                                posen=joueurs[tjen]
+                                encour_en=False
+                            else:
+                                alert("Votre proprosition est trop faible")
+                        except: alert("Vous devez rentrer un nombre")
+                    elif b2.collidepoint(pos):
+                        nbja.append( joueurs[tjen] )
+                        encour_en=False
+        tjen+=1
+        if tjen>=len(joueurs):
+            tjen=0
+    if posen!=None:
+        posen.argent-=enchere
+        posen.cases_possedees.append( [ic,0,0] )
+        aff_j(joueurs,tourjoueur)
+        alert(posen.pseudo+" a gagné "+cases[ic][0])
 
 def ecran_choix(joueurs,tourjoueur):
     j=joueurs[tourjoueur]
@@ -429,10 +474,12 @@ def ecran_choix(joueurs,tourjoueur):
             fenetre.blit( font.render("ok",True,(0,0,0)) , [rx(660),ry(570)])
         else:   
             fenetre.blit( font.render("Elle est possédée par "+pos[1].pseudo,True,(50,50,50)),[rx(400),ry(400)])
-            print(pos[2])
-            fenetre.blit( font.render("Le loyer sera de "+str(pos[2])+" M $",True,(50,50,50)),[rx(400),ry(450)])
-            j.argent-=pos[2]
-            pos[1].argent+=pos[2]
+            if not pos[1].emprisone:
+                fenetre.blit( font.render("Le loyer sera de "+str(pos[2])+" M $",True,(50,50,50)),[rx(400),ry(450)])
+                j.argent-=pos[2]
+                pos[1].argent+=pos[2]
+            else:   
+                fenetre.blit( font.render("Le propriétaire est en prison donc vous ne payez pas le loyer",True,(50,50,50)),[rx(300),ry(450)])
             bts[2]=pygame.draw.rect( fenetre,(255,255,255), (rx(650),ry(550),rx(75),ry(50)) , 0)
             fenetre.blit( font.render("ok",True,(0,0,0)) , [rx(660),ry(570)])
     elif ca[1]==3:
@@ -440,6 +487,12 @@ def ecran_choix(joueurs,tourjoueur):
         fenetre.blit( font.render("Vous devez tirer une carte chance",True,(50,50,50)),[rx(400),ry(400)])
         bts[3]=pygame.draw.rect( fenetre,(255,255,255), (rx(400),ry(550),rx(250),ry(50)) , 0)
         fenetre.blit( font.render("tirer un carte chance",True,(0,0,0)) , [rx(420),ry(570)])
+    elif ca[1]==8:
+        fenetre.blit( font.render("Vous êtes emprisoné",True,(50,50,50)),[rx(400),ry(350)])
+        joueurs[tourjoueur].emprisone=True
+        joueurs[tourjoueur].caseactu=6
+        bts[2]=pygame.draw.rect( fenetre,(255,255,255), (rx(650),ry(550),rx(75),ry(50)) , 0)
+        fenetre.blit( font.render("ok",True,(0,0,0)) , [rx(660),ry(570)])
     else:
         bts[2]=pygame.draw.rect( fenetre,(255,255,255), (rx(650),ry(550),rx(75),ry(50)) , 0)
         fenetre.blit( font.render("ok",True,(0,0,0)) , [rx(660),ry(570)])
@@ -462,8 +515,7 @@ def ecran_choix(joueurs,tourjoueur):
                                 j.cases_possedees.append( [cases.index(ca),0,0] )
                             else:
                                 alert("Vous n'avez pas assez d'argent")
-                        elif i==1:
-                            pass
+                        elif i==1: enchere(j.caseactu,joueurs,tourjoueur)
                         elif i==2: encour_c=False
                         elif i==3: tirercartechance(j,joueurs,tourjoueur)
 
@@ -499,12 +551,15 @@ def vendre_prop(j,joueurs,tourjoueur):
                         alert("Vous avez vendu à la banque "+cases[ii][0]+"| Cela vous a rapporté "+str(cases[ii][2]/2)+" M $")
 
 def construire(j,joueurs,tourjoueur):
-    pygame.draw.rect(fenetre,(100,100,100),(rx(300),ry(200),rx(700),ry(600)),0)
-    fenetre.blit( font.render("Séléctionnez la propriété sur laquelle vous voulez construire une maison :",True,(255,255,255)) , [rx(350),ry(350)])
+    pygame.draw.rect(fenetre,(100,100,100),(rx(200),ry(100),rx(700),ry(700)),0)
+    fenetre.blit( font.render("Séléctionnez la propriété sur laquelle vous voulez construire une maison :",True,(255,255,255)) , [rx(350),ry(250)])
+    b1=pygame.draw.rect(fenetre,(255,0,0),(rx(850),ry(100),rx(50),ry(50)),0)
+    fenetre.blit( font4.render("X",True,(0,0,0)) , [rx(750),ry(300)])
     cr=[]
-    xx,yy,ctx,cty=rx(350),ry(450),rx(200),ry(200)
+    xx,yy,ctx,cty=rx(350),ry(300),rx(150),ry(75)
     for p in j.cases_possedees:
-        cr.append( pygame.draw.rect(fenetre,(255,255,255),(xx,yy,ctx,cty),0) )
+        clb=couleurs[cases[p[0]][3]]
+        cr.append( pygame.draw.rect(fenetre,clb,(xx,yy,ctx,cty),0) )
         pygame.draw.rect(fenetre,(0,0,0),(xx,yy,ctx,cty),rx(2))
         fenetre.blit( font.render(cases[p[0]][0],True,(0,0,0)) , [xx+rx(5),yy+ry(5)])
         if p[1]<4: fenetre.blit( font.render(str(cases[p[0]][10])+" M $",True,(0,0,0)) , [xx+rx(5),yy+ry(30)])
@@ -519,6 +574,7 @@ def construire(j,joueurs,tourjoueur):
             if event.type==QUIT: exit()
             elif event.type==MOUSEBUTTONUP:
                 pos=pygame.mouse.get_pos()
+                if b1.collidepoint(pos): encour_co=False
                 for c in cr:
                     if c.collidepoint(pos):
                         encour_co=False
@@ -546,6 +602,31 @@ def construire(j,joueurs,tourjoueur):
                             else: alert("Vous avez déjà un hotel dessus")
                         else: alert("Vous ne possédez pas toutes les propriétés|de cette couleur pour construire dessus")
 
+def sortir_prison(joueurs,tourjoueur):
+    j=joueurs[tourjoueur]
+    pygame.draw.rect(fenetre,(40,40,40),(rx(200),ry(300),rx(700),ry(600)),0)
+    fenetre.blit( font.render("Vous êtes emprisoné, pour sortir de prison",True,(0,0,0)) ,[rx(250),ry(350)])
+    fenetre.blit( font.render("vous devez payer 5000 M $",True,(0,0,0)) ,[rx(250),ry(380)])
+    fenetre.blit( font.render("vous pouvez aussi ne rien faire et rester emprisoné",True,(0,0,0)) ,[rx(250),ry(410)])
+    b1=pygame.draw.rect(fenetre,(200,200,100),(rx(500),ry(500),rx(100),ry(50)),0)
+    fenetre.blit( font.render("ne rien faire",True,(0,0,0)) ,[rx(510),ry(510)])
+    b2=pygame.draw.rect(fenetre,(200,200,100),(rx(700),ry(500),rx(100),ry(50)),0)
+    fenetre.blit( font.render("payer 5000 M $",True,(0,0,0)) ,[rx(710),ry(510)])
+    pygame.display.udpate()
+    encour_p=True
+    while encour_p:
+        for event in pygame.event.get():
+            if event.type==QUIT: exit()
+            elif event.type==KEYDOWN:
+                if event.key==K_ESCAPE: encour_p=False
+            elif event.type==MOUSEBUTTONUP:
+                pos=pygame.mouse.get_pos()
+                if b1.collidepoint(pos): encour_p=False
+                elif b2.collidepoint(pos):
+                    j.emprisone=False
+                    j.argent-=5000
+                    encour_p=False
+
 def main_j(joueurs):
     tour=1
     encour=True
@@ -569,16 +650,17 @@ def main_j(joueurs):
                     for b in bts:
                         if b!=None and b.collidepoint(pos):
                             di=bts.index(b)
-                            if di==0:
+                            if di==0 and not joueurs[tourjoueur].emprisone:
                                 crs,bts=aff_j(joueurs,tourjoueur)
                                 des=lancerdes()
+                                crs,bts=aff_j(joueurs,tourjoueur)
                                 vl=0
                                 for d in des: vl+=d
                                 joueurs[tourjoueur].caseactu+=vl
                                 if joueurs[tourjoueur].caseactu >= len(cases):
                                     joueurs[tourjoueur].caseactu=joueurs[tourjoueur].caseactu-len(cases)
-                                    joueurs[tourjoueur].argent+=5000
-                                    alert("Vous êtes passé par la case départ|vous avez recu 5000 M $")
+                                    joueurs[tourjoueur].argent+=2000
+                                    alert("Vous êtes passé par la case départ|vous avez recu 2000 M $")
                                 crs,bts=aff_j(joueurs,tourjoueur)
                                 ecran_choix(joueurs,tourjoueur)
                                 if len(des)==2 and des[0]==des[1]:
@@ -586,11 +668,24 @@ def main_j(joueurs):
                                 else:
                                     tourjoueur+=1
                                     if tourjoueur>=len(joueurs): tourjoueur,tour=0,tour+1
-                            elif di==1 and len(joueurs[tourjoueur].cases_possedees) >= 1: vendre_prop(joueurs[tourjoueur],joueurs,tourjoueur)
-                            elif di==3 and len(joueurs[tourjoueur].cases_possedees) >= 1: construire(joueurs[tourjoueur],joueurs,tourjoueur)
-                            elif di in [1,3]: alert("Vous n'avez pas de propriétés")
+                            elif di==0:
+                                crs,bts=aff_j(joueurs,tourjoueur)
+                                des=lancerdes()
+                                if len(des)==2 and des[0]==des[1]:
+                                    crs,bts=aff_j(joueurs,tourjoueur)
+                                    alert("Vous avez fait un double|vous sortez de prison")
+                                    joueurs[tourjoueur].emprisone=False
+                                    tourjoueur+=1
+                                    if tourjoueur>=len(joueurs): tourjoueur,tour=0,tour+1
+                                else:
+                                    alert("Vous n'avez pas fait un double|vous ne sortez pas de prison")
+                                    sortir_prison(joueurs,tourjoueur)
+                                    tourjoueur+=1
+                                    if tourjoueur>=len(joueurs): tourjoueur,tour=0,tour+1
+                            elif di==1 and len(joueurs[tourjoueur].cases_possedees) >= 1  and not joueurs[tourjoueur].emprisone: vendre_prop(joueurs[tourjoueur],joueurs,tourjoueur)
+                            elif di==3 and len(joueurs[tourjoueur].cases_possedees) >= 1  and not joueurs[tourjoueur].emprisone: construire(joueurs[tourjoueur],joueurs,tourjoueur)
+                            elif di in [1,3]: alert("Vous n'avez pas de propriétés|ou vous êtes emprisoné")
                             
-
 def aff_menu(joueurs):
     bts=[]
     for x in range(10): bts.append(None)
@@ -639,10 +734,6 @@ def menu():
                     for j in jr:
                         if j.collidepoint(pos): joueurs[jr.index(j)].pseudo=pynput("pseudo :")
                         
-            
-
-
-
 menu()
 
 
@@ -656,5 +747,6 @@ menu()
 
 
 
+    
     
     
